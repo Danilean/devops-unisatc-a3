@@ -1,32 +1,17 @@
-name: Playwright Tests
+name: Run Tests on PR
 
 on:
   pull_request:
-    branches: [master, develop]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Setup Node
+      - uses: actions/checkout@v3
+      - name: Install Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
-
-      - name: Instalar dependências
-        run: npm install
-
-      - name: Instalar navegadores do Playwright
-        run: npx playwright install --with-deps
-
-      - name: Iniciar Strapi em segundo plano
-        run: |
-          nohup npm run develop > strapi.log 2>&1 &
-          sleep 15
-
-      - name: Rodar testes
-        run: npx playwright test
+      - run: npm ci
+      - run: npx playwright install --with-deps
+      - run: npm run test:e2e
