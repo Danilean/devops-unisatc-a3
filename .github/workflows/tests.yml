@@ -1,8 +1,8 @@
-name: pull_request_tests
+name: Pull Request Tests
 
 on:
   pull_request:
-    branches: [develop, master]
+    branches: [develop]
 
 jobs:
   e2e-tests:
@@ -11,10 +11,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18
 
@@ -40,24 +40,19 @@ jobs:
         env:
           HOST: 0.0.0.0
           PORT: 1337
-          APP_KEYS: ImJMpHjnCdJw4ii7jZzCXQ==,Jg239VoMach6Fh2LAH6ydA==,LAdmPTwE8oqyVjAV4pCkBQ==,f1gPGngKmE5xhyDktSpCVw==
-          ADMIN_JWT_SECRET: deEi8rGl7WB43uXiaYPaOg==
-          JWT_SECRET: U2Nh9O8oDdw6gzXqWbg5Eg==
-          API_TOKEN_SALT: X2d0C6rgXwWgwEZCslZN0A==
-          DATABASE_FILENAME: .tmp/data.db
         run: |
           pnpm develop &
           n=0
           until curl --fail http://localhost:1337; do
             n=$((n+1))
-            if [ $n -ge 80 ]; then
+            if [ $n -ge 60 ]; then
               echo "Strapi não iniciou no tempo esperado" && exit 1
             fi
             sleep 5
           done
 
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install
+      - name: Install Playwright Browsers
+        run: pnpm exec playwright install --with-deps
 
-      - name: Run Playwright tests
+      - name: Run Playwright Tests
         run: pnpm exec playwright test
