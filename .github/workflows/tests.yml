@@ -24,7 +24,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Criar .env com variáveis
+      - name: Definir variáveis de ambiente
         run: |
           echo "APP_KEYS=${{ secrets.APP_KEYS }}" >> .env
           echo "API_TOKEN_SALT=${{ secrets.API_TOKEN_SALT }}" >> .env
