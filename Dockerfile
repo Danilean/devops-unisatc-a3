@@ -2,11 +2,21 @@ FROM node:18
 
 WORKDIR /app
 
+# Instala pnpm via Corepack (mais confiável e cacheável)
+RUN corepack enable && corepack prepare pnpm@8.15.4 --activate
+
 COPY package.json pnpm-lock.yaml ./
-RUN npm install -g pnpm && pnpm install
+RUN pnpm install
 
 COPY . .
 
+# Build (em produção pode ser RUN pnpm build --filter ... dependendo do workspace)
+RUN pnpm build
+
+# Porta usada pela Strapi
+EXPOSE 1337
+
+# Define variáveis de ambiente via ENV
 ARG APP_KEYS
 ARG API_TOKEN_SALT
 ARG ADMIN_JWT_SECRET
@@ -19,7 +29,5 @@ ENV APP_KEYS=$APP_KEYS \
     JWT_SECRET=$JWT_SECRET \
     DATABASE_FILENAME=$DATABASE_FILENAME
 
-RUN pnpm build
-
-EXPOSE 1337
+# Inicia a aplicação
 CMD ["pnpm", "run", "start"]
