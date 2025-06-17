@@ -26,6 +26,15 @@ jobs:
 
           docker push ${{ secrets.DOCKER_USERNAME }}/strapi-a3
 
+      - name: Rodar container local com volume persistente
+        run: |
+          mkdir -p ./volumes/tmp
+          docker run -d -p 1337:1337 \
+            --name strapi-container \
+            --env-file .env \
+            -v ${{ github.workspace }}/volumes/tmp:/app/.tmp \
+            ${{ secrets.DOCKER_USERNAME }}/strapi-a3
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
