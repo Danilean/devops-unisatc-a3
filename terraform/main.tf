@@ -42,4 +42,13 @@ resource "aws_ecs_service" "strapi" {
     security_groups = [var.security_group_id]
     assign_public_ip = true
   }
+
+  deployment_controller {
+    type = "ECS"
+  }
+
+  deployment_maximum_percent         = 200
+  deployment_minimum_healthy_percent = 100
+
+  force_new_deployment = true
 }
