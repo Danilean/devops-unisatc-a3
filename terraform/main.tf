@@ -43,10 +43,16 @@ resource "aws_ecs_service" "strapi" {
     assign_public_ip = true
   }
 
-  lifecycle {
-    create_before_destroy = false
-    replace_triggered_by = [aws_ecs_task_definition.strapi]
+  deployment_controller {
+    type = "ECS"
   }
 
-  depends_on = [aws_ecs_task_definition.strapi]
+  deployment_maximum_percent         = 200
+  deployment_minimum_healthy_percent = 100
+
+  force_new_deployment = true
+
+  depends_on = [
+    aws_iam_role.ecs_task_execution_role,
+  ]
 }
