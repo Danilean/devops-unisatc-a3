@@ -44,7 +44,9 @@ resource "aws_ecs_service" "strapi" {
   }
 
   lifecycle {
-    create_before_destroy = true
-    prevent_destroy       = false
+    create_before_destroy = false
+    replace_triggered_by = [aws_ecs_task_definition.strapi]
   }
+
+  depends_on = [aws_iam_role.ecs_execution]
 }
