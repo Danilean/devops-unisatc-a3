@@ -34,20 +34,12 @@ resource "aws_ecs_service" "strapi" {
   name            = "strapi-service"
   cluster         = aws_ecs_cluster.strapi.id
   task_definition = aws_ecs_task_definition.strapi.arn
-  launch_type     = "FARGATE"
   desired_count   = 1
+  launch_type     = "FARGATE"
 
   network_configuration {
-    subnets          = split(",", var.subnet_ids)
-    security_groups  = [var.security_group_id]
+    subnets         = var.subnet_ids
+    security_groups = [var.security_group_id]
     assign_public_ip = true
   }
-
-  lifecycle {
-    create_before_destroy = true
-    prevent_destroy       = false
-  }
-
-  depends_on = [aws_iam_role.ecs_execution]
 }
-
