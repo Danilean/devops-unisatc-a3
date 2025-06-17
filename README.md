@@ -35,3 +35,10 @@ pnpm build
 ```
 ---
 <sub>🤫 Psst! [Strapi is hiring](https://strapi.io/careers).</sub>
+
+### Alunos
+
+- Danilo Formanski
+- Vitor Minatto Barp
+- Vinicius Albino
+- Yuri Lopes Machado
