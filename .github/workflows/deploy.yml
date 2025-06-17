@@ -26,12 +26,21 @@ jobs:
 
           docker push ${{ secrets.DOCKER_USERNAME }}/strapi-a3
 
-      - name: Rodar container local com volume persistente
+      - name: Criar volume temporário
+        run: mkdir -p ./volumes/tmp
+
+      - name: Rodar container local com variáveis e volume
         run: |
-          mkdir -p ./volumes/tmp
           docker run -d -p 1337:1337 \
             --name strapi-container \
-            --env-file .env \
+            -e HOST=0.0.0.0 \
+            -e PORT=1337 \
+            -e APP_KEYS="${{ secrets.APP_KEYS }}" \
+            -e API_TOKEN_SALT="${{ secrets.API_TOKEN_SALT }}" \
+            -e ADMIN_JWT_SECRET="${{ secrets.ADMIN_JWT_SECRET }}" \
+            -e JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+            -e DATABASE_CLIENT=sqlite \
+            -e DATABASE_FILENAME=.tmp/data.db \
             -v ${{ github.workspace }}/volumes/tmp:/app/.tmp \
             ${{ secrets.DOCKER_USERNAME }}/strapi-a3
 
