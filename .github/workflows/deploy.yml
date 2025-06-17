@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-name: Deploy Strapi com Docker
-=======
 name: Deploy Strapi
->>>>>>> develop
 
 on:
   push:
