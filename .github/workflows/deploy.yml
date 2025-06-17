@@ -1,4 +1,4 @@
-name: Deploy Strapi AWS
+name: Deploy Strapi 
 
 on:
   push:
@@ -17,5 +17,11 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/strapi-a3 .
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/strapi-a3 \
+          --build-arg APP_KEYS="${{ secrets.APP_KEYS }}" \
+          --build-arg API_TOKEN_SALT="${{ secrets.API_TOKEN_SALT }}" \
+          --build-arg ADMIN_JWT_SECRET="${{ secrets.ADMIN_JWT_SECRET }}" \
+          --build-arg JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+          --build-arg DATABASE_FILENAME="${{ secrets.DATABASE_FILENAME }}" .
+          
           docker push ${{ secrets.DOCKER_USERNAME }}/strapi-a3

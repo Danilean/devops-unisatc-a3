@@ -2,23 +2,24 @@ FROM node:18
 
 WORKDIR /app
 
-# Copia apenas os arquivos necessários para instalar dependências
 COPY package.json pnpm-lock.yaml ./
-
-# Instala o gerenciador pnpm e as dependências
 RUN npm install -g pnpm && pnpm install
 
-# Copia o restante do projeto, incluindo o .env
 COPY . .
 
-# Garante que o .env esteja presente na imagem
-COPY .env .env
+ARG APP_KEYS
+ARG API_TOKEN_SALT
+ARG ADMIN_JWT_SECRET
+ARG JWT_SECRET
+ARG DATABASE_FILENAME
 
-# Compila a aplicação (gera o /dist necessário para o Strapi start)
+ENV APP_KEYS=$APP_KEYS \
+    API_TOKEN_SALT=$API_TOKEN_SALT \
+    ADMIN_JWT_SECRET=$ADMIN_JWT_SECRET \
+    JWT_SECRET=$JWT_SECRET \
+    DATABASE_FILENAME=$DATABASE_FILENAME
+
 RUN pnpm build
 
-# Expõe a porta do Strapi
 EXPOSE 1337
-
-# Inicia a aplicação
 CMD ["pnpm", "run", "start"]
