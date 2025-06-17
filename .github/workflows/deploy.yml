@@ -25,3 +25,13 @@ jobs:
           --build-arg DATABASE_FILENAME="${{ secrets.DATABASE_FILENAME }}" .
           
           docker push ${{ secrets.DOCKER_USERNAME }}/strapi-a3
+
+      - name: Terraform apply
+        run: terraform apply -auto-approve \
+          -var="image_url=${{ secrets.DOCKER_USERNAME }}/strapi-a3" \
+          -var="execution_role_arn=${{ secrets.ECS_EXECUTION_ROLE }}" \
+          -var="task_role_arn=${{ secrets.ECS_TASK_ROLE }}" \
+          -var="subnet_ids=${{ secrets.SUBNET_IDS }}" \
+          -var="security_group_id=${{ secrets.SECURITY_GROUP_ID }}"
+        working-directory: terraform
+      
