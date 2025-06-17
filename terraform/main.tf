@@ -48,5 +48,5 @@ resource "aws_ecs_service" "strapi" {
     replace_triggered_by = [aws_ecs_task_definition.strapi]
   }
 
-  depends_on = [aws_iam_role.ecs_execution]
+  depends_on = [aws_ecs_task_definition.strapi]
 }
