@@ -66,11 +66,19 @@ jobs:
           security_group_id   = "${{ secrets.SECURITY_GROUP_ID }}"
           EOF
 
+      - name: Import ECS Service if not imported
+        run: |
+          terraform state list aws_ecs_service.strapi || terraform import aws_ecs_service.strapi strapi-cluster/strapi-service
+
       - name: Terraform Init
-        run: terraform -chdir=terraform init
+      run: terraform -chdir=terraform init
 
       - name: Terraform Plan
-        run: terraform -chdir=terraform plan
+        id: plan
+        run: |
+          terraform -chdir=terraform plan -detailed-exitcode
+        continue-on-error: true
 
       - name: Terraform Apply
+        if: steps.plan.outcome == 'success' && steps.plan.conclusion == 'success'
         run: terraform -chdir=terraform apply -auto-approve

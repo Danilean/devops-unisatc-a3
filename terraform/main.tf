@@ -51,4 +51,10 @@ resource "aws_ecs_service" "strapi" {
   deployment_minimum_healthy_percent = 100
 
   force_new_deployment = true
+
+  lifecycle {
+    # Ignora mudanças na task_definition para evitar recriação desnecessária.
+    # Remova se quiser aplicar atualizações automaticamente.
+    ignore_changes = [task_definition]
+  }
 }
