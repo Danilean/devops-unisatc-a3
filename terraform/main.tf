@@ -42,4 +42,9 @@ resource "aws_ecs_service" "strapi" {
     security_groups = [var.security_group_id]
     assign_public_ip = true
   }
+
+  lifecycle {
+    create_before_destroy = true
+    prevent_destroy       = false
+  }
 }
