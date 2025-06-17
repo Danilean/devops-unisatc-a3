@@ -29,4 +29,5 @@ test("Criação de novo Artigo", async ({ page }) => {
     await expect(publishButton).toBeEnabled(); // ou: await publishButton.waitFor({ state: 'visible' });
     await publishButton.click();
 
+    await expect(page).toHaveURL(/.*categoria.*/);
 });
