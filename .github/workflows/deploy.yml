@@ -71,7 +71,7 @@ jobs:
           terraform state list aws_ecs_service.strapi || terraform import aws_ecs_service.strapi strapi-cluster/strapi-service
 
       - name: Terraform Init
-      run: terraform -chdir=terraform init
+        run: terraform -chdir=terraform init
 
       - name: Terraform Plan
         id: plan
