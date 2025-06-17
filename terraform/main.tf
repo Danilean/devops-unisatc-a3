@@ -51,8 +51,4 @@ resource "aws_ecs_service" "strapi" {
   deployment_minimum_healthy_percent = 100
 
   force_new_deployment = true
-
-  depends_on = [
-    aws_iam_role.ecs_task_execution_role,
-  ]
 }
