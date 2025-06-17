@@ -1,0 +1,38 @@
+name: Deploy Strapi AWS
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Docker login
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build e Push Docker
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/strapi-a3 .
+          docker push ${{ secrets.DOCKER_USERNAME }}/strapi-a3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Configurar AWS
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Terraform apply
+        run: terraform apply -auto-approve \
+          -var="image_url=${{ secrets.DOCKER_USERNAME }}/strapi-a3" \
+          -var="execution_role_arn=${{ secrets.ECS_EXECUTION_ROLE }}" \
+          -var="task_role_arn=${{ secrets.ECS_TASK_ROLE }}" \
+          -var="subnet_ids=${{ secrets.SUBNET_IDS }}" \
+          -var="security_group_id=${{ secrets.SECURITY_GROUP_ID }}"
+        working-directory: terraform
